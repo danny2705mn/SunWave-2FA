@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HopeBridge 2FA</title>
+  <link rel="icon" href="https://i.imgur.com/HOPEBRIDGELOGO.png" /> <!-- Replace with actual logo URL -->
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f8f9;
+      color: #003b49;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .logo {
+      width: 150px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+    .code {
+      font-size: 3em;
+      font-weight: bold;
+      color: #005f73;
+    }
+    .timer {
+      font-size: 1.5em;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <img src="https://i.imgur.com/HOPEBRIDGELOGO.png" alt="HopeBridge Logo" class="logo" /> <!-- Replace with actual logo URL -->
+  <h1>HopeBridge Recovery 2FA Code</h1>
+  <div class="code" id="code">Loading...</div>
+  <div class="timer" id="timer">Refreshing in 30s</div>
+
+  <script>
+    let seconds = 30;
+    const codeEl = document.getElementById('code');
+    const timerEl = document.getElementById('timer');
+
+    async function fetchCode() {
+      try {
+        const res = await fetch('/api/index');
+        const data = await res.json();
+        codeEl.textContent = data.code;
+      } catch (e) {
+        codeEl.textContent = 'Error loading code';
+      }
+    }
+
+    function updateTimer() {
+      timerEl.textContent = `Refreshing in ${seconds}s`;
+    }
+
+    function tick() {
+      seconds--;
+      if (seconds <= 0) {
+        seconds = 30;
+        fetchCode();
+      }
+      updateTimer();
+    }
+
+    fetchCode();
+    updateTimer();
+    setInterval(tick, 1000);
+  </script>
+</body>
+</html>
